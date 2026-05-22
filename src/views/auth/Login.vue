@@ -107,7 +107,7 @@ const togglePasswordVisible = () => {
 <style lang="scss" scoped>
 .login-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #ff6b35 0%, #d4145a 100%);
+  background: #f8fafc;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,11 +116,12 @@ const togglePasswordVisible = () => {
 
 .login-wrapper {
   background: #fff;
-  border-radius: 16px;
+  border-radius: 24px;
   padding: 48px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 40px rgba(217, 33, 33, 0.15);
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
+  border: 1px solid #f1f5f9;
 }
 
 .login-header {
@@ -128,31 +129,32 @@ const togglePasswordVisible = () => {
   margin-bottom: 40px;
   
   .logo {
-    width: 80px;
-    height: 80px;
+    width: 88px;
+    height: 88px;
     margin: 0 auto 20px;
-    background: linear-gradient(135deg, #ff6b35 0%, #d4145a 100%);
-    border-radius: 50%;
+    background: #FFD700;
+    border-radius: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     
     .logo-text {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: bold;
-      color: #fff;
+      color: #D92121;
     }
   }
   
   h2 {
     margin: 0 0 8px;
     font-size: 24px;
-    color: #333;
+    color: #0f172a;
+    font-weight: 700;
   }
   
   p {
     margin: 0;
-    color: #999;
+    color: #64748b;
     font-size: 14px;
   }
 }
@@ -160,11 +162,22 @@ const togglePasswordVisible = () => {
 .login-form {
   .el-form-item {
     margin-bottom: 24px;
+    
+    label {
+      display: none;
+    }
   }
   
   .el-input {
     height: 48px;
     font-size: 14px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    
+    &:focus {
+      border-color: #D92121;
+      box-shadow: 0 0 0 3px rgba(217, 33, 33, 0.1);
+    }
   }
 }
 
@@ -173,11 +186,17 @@ const togglePasswordVisible = () => {
   height: 48px;
   font-size: 16px;
   font-weight: 600;
-  background: linear-gradient(135deg, #ff6b35 0%, #d4145a 100%);
+  background: #D92121;
   border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(217, 33, 33, 0.3);
   
   &:hover {
-    opacity: 0.9;
+    background: #c51616;
+  }
+  
+  &:active {
+    transform: scale(0.98);
   }
 }
 
@@ -186,12 +205,12 @@ const togglePasswordVisible = () => {
   margin-top: 24px;
   
   span {
-    color: #666;
+    color: #64748b;
     font-size: 14px;
     cursor: pointer;
     
     &:hover {
-      color: #ff6b35;
+      color: #D92121;
     }
   }
 }

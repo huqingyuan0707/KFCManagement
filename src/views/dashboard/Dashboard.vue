@@ -216,6 +216,9 @@ const formatDate = (dateStr: string): string => {
     align-items: center;
     gap: 16px;
     padding: 24px;
+    border-radius: 20px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
     
     .stat-icon {
       width: 56px;
@@ -228,19 +231,21 @@ const formatDate = (dateStr: string): string => {
       color: #fff;
       
       &.orders {
-        background: linear-gradient(135deg, #ff6b35 0%, #f97316 100%);
+        background: linear-gradient(135deg, #D92121 0%, #c51616 100%);
       }
       
       &.products {
-        background: linear-gradient(135deg, #d4145a 0%, #ec4899 100%);
+        background: linear-gradient(135deg, #FFD700 0%, #ffc107 100%);
+        color: #D92121;
       }
       
       &.users {
-        background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+        background: linear-gradient(135deg, #D92121 0%, #c51616 100%);
       }
       
       &.revenue {
-        background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+        background: linear-gradient(135deg, #FFD700 0%, #ffc107 100%);
+        color: #D92121;
       }
     }
     
@@ -251,6 +256,8 @@ const formatDate = (dateStr: string): string => {
   
   .chart-card {
     height: 100%;
+    border-radius: 20px;
+    border: 1px solid #f1f5f9;
     
     .chart-placeholder {
       padding: 32px;
@@ -274,14 +281,37 @@ const formatDate = (dateStr: string): string => {
         .category-name {
           flex: 1;
           font-size: 14px;
-          color: #666;
+          color: #64748b;
         }
         
         .category-percent {
           font-size: 14px;
           font-weight: 600;
-          color: #333;
+          color: #0f172a;
         }
+      }
+    }
+  }
+  
+  .el-table {
+    border-radius: 16px;
+    
+    .el-table__header {
+      background: #f1f5f9;
+      
+      th {
+        font-weight: 600;
+        color: #0f172a;
+      }
+    }
+    
+    .el-table__row {
+      &:nth-child(even) {
+        background: #fef2f2;
+      }
+      
+      &:hover {
+        background: #f1f5f9;
       }
     }
   }

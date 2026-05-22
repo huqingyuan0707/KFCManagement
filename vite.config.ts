@@ -19,5 +19,12 @@ export default defineConfig({
     }),
   ],
   resolve: { alias: { '@': resolve(__dirname, 'src') } },
-  server: { port: 3001, open: true },
+  server: { 
+    port: 3001, 
+    open: true,
+    hmr: {
+      enabled: true,
+      overlay: true
+    }
+  },
 });

@@ -30,7 +30,7 @@ const tableData = ref<IProduct[]>([]);
 const total = ref(0);
 const loading = ref(false);
 const searchKeyword = ref('');
-const statusFilter = ref<number | undefined>();
+const statusFilter = ref<number | null>(null);
 const categoryFilter = ref('');
 const selectedIds = ref<number[]>([]);
 
@@ -80,7 +80,7 @@ const handleSearch = () => {
 
 const handleReset = () => {
   searchKeyword.value = '';
-  statusFilter.value = undefined;
+  statusFilter.value = null;
   categoryFilter.value = '';
   pagination.page = 1;
   loadData();
@@ -172,8 +172,8 @@ const handleSubmit = async () => {
   }
 };
 
-const handleSelectionChange = (val: number[]) => {
-  selectedIds.value = val;
+const handleSelectionChange = (val: IProduct[]) => {
+  selectedIds.value = val.map(item => item.id);
 };
 
 onMounted(() => {
@@ -206,7 +206,7 @@ onMounted(() => {
           placeholder="选择状态"
           class="filter-select"
         >
-          <el-option label="全部" :value="undefined" />
+          <el-option label="全部" :value="null" />
           <el-option label="在售" :value="1" />
           <el-option label="下架" :value="0" />
         </el-select>
@@ -312,8 +312,8 @@ onMounted(() => {
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-select v-model="form.status">
-            <el-option :label="1" :value="1" />
-            <el-option :label="0" :value="0" />
+            <el-option label="在售" :value="1" />
+            <el-option label="下架" :value="0" />
           </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="description">
@@ -330,11 +330,20 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .product-page {
+  background: #f8fafc;
+  padding: 24px;
+  min-height: calc(100vh - 140px);
+  overflow: hidden;
+  
   .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
+    padding: 20px 24px;
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #f1f5f9;
     
     .search-bar {
       display: flex;
@@ -343,10 +352,14 @@ onMounted(() => {
       
       .search-input {
         width: 280px;
+        border-radius: 12px;
+        height: 40px;
       }
       
       .filter-select {
         width: 150px;
+        border-radius: 12px;
+        height: 40px;
       }
     }
     
@@ -356,10 +369,110 @@ onMounted(() => {
     }
   }
   
+  .el-table {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
+    width: 100%;
+    max-width: 100%;
+    
+    .el-table__header {
+      background: #f1f5f9;
+      
+      th {
+        font-weight: 600;
+        color: #0f172a;
+        border-bottom: 1px solid #e2e8f0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+    
+    .el-table__row {
+      height: 48px;
+      
+      &:nth-child(even) {
+        background: #fef2f2;
+      }
+      
+      &:hover {
+        background: #f1f5f9;
+      }
+    }
+    
+    .el-table__cell {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  
   .pagination-wrapper {
     display: flex;
     justify-content: flex-end;
     margin-top: 24px;
+    padding: 16px 24px;
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
   }
+  
+  .el-dialog {
+    border-radius: 20px;
+    
+    .el-dialog__header {
+      background: #D92121;
+      border-radius: 20px 20px 0 0;
+      
+      .el-dialog__title {
+        color: #fff;
+      }
+      
+      .el-dialog__close {
+        color: #fff;
+      }
+    }
+    
+    .el-form-item {
+      label {
+        color: #334155;
+        font-weight: 500;
+      }
+    }
+    
+    .el-input, .el-select, .el-input-number, textarea {
+      border-radius: 12px;
+      height: 40px;
+    }
+  }
+}
+
+:deep(.el-button--primary) {
+  background: #D92121;
+  border-color: #D92121;
+  border-radius: 16px;
+  padding: 8px 24px;
+  box-shadow: 0 4px 6px -1px rgba(217, 33, 33, 0.3);
+  
+  &:hover {
+    background: #c51616;
+    border-color: #c51616;
+  }
+  
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+:deep(.el-button--danger) {
+  background: #ef4444;
+  border-color: #ef4444;
+  border-radius: 16px;
+}
+
+:deep(.el-button--default) {
+  border-radius: 16px;
+  padding: 8px 24px;
 }
 </style>

@@ -23,7 +23,8 @@ import {
   Bell,
   PieChart,
   UserFilled,
-  Back
+  Back,
+  Grid
 } from '@element-plus/icons-vue';
 
 const router = useRouter();
@@ -32,11 +33,67 @@ const userStore = useUserStore();
 const appStore = useAppStore();
 
 const menuItems = [
-  { path: '/', name: 'Dashboard', label: '数据看板', icon: PieChart },
-  { path: '/product', name: 'Product', label: '商品管理', icon: ShoppingBag },
-  { path: '/order', name: 'Order', label: '订单管理', icon: Document },
+  { path: '/', name: 'Dashboard', label: '工作台', icon: PieChart },
+  { 
+    name: 'Product', 
+    label: '商品管理', 
+    icon: ShoppingBag,
+    children: [
+      { path: '/product', name: 'Product', label: '商品列表' },
+      { path: '/product/category', name: 'ProductCategory', label: '分类管理' },
+      { path: '/product/spec', name: 'ProductSpec', label: '规格配置' },
+    ]
+  },
+  { 
+    name: 'Order', 
+    label: '订单管理', 
+    icon: Document,
+    children: [
+      { path: '/order', name: 'Order', label: '订单列表' },
+      { path: '/order/aftersale', name: 'OrderAftersale', label: '订单售后' },
+    ]
+  },
+  { path: '/kitchen', name: 'Kitchen', label: '后厨出餐', icon: Grid },
+  { 
+    name: 'Inventory', 
+    label: '库存管理', 
+    icon: Document,
+    children: [
+      { path: '/inventory', name: 'Inventory', label: '库存管理' },
+      { path: '/inventory/log', name: 'InventoryLog', label: '库存日志' },
+    ]
+  },
+  { 
+    name: 'Marketing', 
+    label: '营销活动', 
+    icon: ShoppingBag,
+    children: [
+      { path: '/marketing', name: 'Marketing', label: '活动列表' },
+      { path: '/marketing/coupon', name: 'MarketingCoupon', label: '优惠券管理' },
+      { path: '/marketing/statistics', name: 'MarketingStatistics', label: '活动统计' },
+    ]
+  },
+  { 
+    name: 'Statistics', 
+    label: '数据统计', 
+    icon: PieChart,
+    children: [
+      { path: '/statistics', name: 'Statistics', label: '营收统计' },
+      { path: '/statistics/sales', name: 'StatisticsSales', label: '销量统计' },
+      { path: '/statistics/report', name: 'StatisticsReport', label: '报表导出' },
+    ]
+  },
   { path: '/user', name: 'User', label: '用户管理', icon: UserFilled },
-  { path: '/settings', name: 'Settings', label: '系统设置', icon: Setting },
+  { 
+    name: 'Settings', 
+    label: '系统设置', 
+    icon: Setting,
+    children: [
+      { path: '/settings', name: 'Settings', label: '账号权限' },
+      { path: '/settings/store', name: 'SettingsStore', label: '门店配置' },
+      { path: '/settings/log', name: 'SettingsLog', label: '操作日志' },
+    ]
+  },
 ];
 
 const currentPath = ref('');
@@ -48,6 +105,21 @@ onMounted(() => {
 const handleMenuClick = (path: string) => {
   currentPath.value = path;
   router.push(path);
+};
+
+const getPageTitle = () => {
+  for (const item of menuItems) {
+    if (item.path === currentPath.value) {
+      return item.label;
+    }
+    if (item.children) {
+      const child = item.children.find(c => c.path === currentPath.value);
+      if (child) {
+        return child.label;
+      }
+    }
+  }
+  return '欢迎';
 };
 
 const handleLogout = () => {
@@ -65,7 +137,15 @@ const handleToggleSidebar = () => {
     <aside class="sidebar" :class="{ collapsed: appStore.sidebarCollapsed }">
       <div class="sidebar-header">
         <div class="logo">
-          <span class="logo-text">KFC</span>
+          <img 
+            src="/src/static/KFC_logo-image.svg" 
+            alt="KFC Logo" 
+            class="logo-img"
+          />
+        </div>
+        <div class="system-name">
+          <span>KFC</span>
+          <span class="sub-title">运营管理系统</span>
         </div>
       </div>
       
@@ -74,16 +154,32 @@ const handleToggleSidebar = () => {
         class="sidebar-menu"
         :collapse="appStore.sidebarCollapsed"
       >
-        <el-menu-item 
-          v-for="item in menuItems" 
-          :key="item.path"
-          :index="item.path"
-          :class="{ active: currentPath === item.path }"
-          @click="handleMenuClick(item.path)"
-        >
-          <component :is="item.icon" />
-          <span>{{ item.label }}</span>
-        </el-menu-item>
+        <template v-for="item in menuItems" :key="item.name">
+          <el-menu-item 
+            v-if="!item.children"
+            :index="item.path"
+            :class="{ active: currentPath === item.path }"
+            @click="handleMenuClick(item.path)"
+          >
+            <component :is="item.icon" />
+            <span>{{ item.label }}</span>
+          </el-menu-item>
+          <el-sub-menu v-else :index="item.name">
+            <template #title>
+              <component :is="item.icon" />
+              <span>{{ item.label }}</span>
+            </template>
+            <el-menu-item 
+              v-for="child in item.children" 
+              :key="child.path"
+              :index="child.path"
+              :class="{ active: currentPath === child.path }"
+              @click="handleMenuClick(child.path)"
+            >
+              <span>{{ child.label }}</span>
+            </el-menu-item>
+          </el-sub-menu>
+        </template>
       </el-menu>
       
       <div class="sidebar-footer">
@@ -105,7 +201,7 @@ const handleToggleSidebar = () => {
           >
             <ArrowRight />
           </el-button>
-          <h1 class="page-title">{{ menuItems.find(item => item.path === currentPath)?.label || '欢迎' }}</h1>
+          <h1 class="page-title">{{ getPageTitle() }}</h1>
         </div>
         
         <div class="header-right">
@@ -153,12 +249,12 @@ const handleToggleSidebar = () => {
 .layout-container {
   display: flex;
   min-height: 100vh;
-  background: #f5f5f5;
+  background: #f8fafc;
 }
 
 .sidebar {
-  width: 250px;
-  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  width: 240px;
+  background: #D92121;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -175,21 +271,48 @@ const handleToggleSidebar = () => {
   
   .sidebar-header {
     padding: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
     
     .logo {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, #ff6b35 0%, #d4145a 100%);
-      border-radius: 12px;
+      width: 56px;
+      height: 56px;
+      background: #FFD700;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+      overflow: hidden;
       
-      .logo-text {
-        font-size: 18px;
-        font-weight: bold;
+      .logo-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+    
+    .system-name {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      
+      span {
+        font-size: 14px;
+        font-weight: 600;
         color: #fff;
+        text-align: center;
+      }
+      
+      .sub-title {
+        font-size: 11px;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.7);
+        letter-spacing: 1px;
       }
     }
   }
@@ -201,39 +324,91 @@ const handleToggleSidebar = () => {
     padding: 20px 0;
     
     .el-menu-item {
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(255, 255, 255, 0.9);
       margin: 4px 12px;
       border-radius: 8px;
       transition: all 0.2s ease;
+      height: 48px;
+      line-height: 48px;
       
       &:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.15);
         color: #fff;
       }
       
       &.active {
-        background: linear-gradient(135deg, #ff6b35 0%, #d4145a 100%);
+        background: rgba(255, 215, 0, 0.3);
         color: #fff;
       }
       
-      i {
-        font-size: 18px;
+      i,
+      svg {
+        font-size: 18px !important;
+        color: inherit !important;
+        width: 20px !important;
+        height: 20px !important;
+        flex-shrink: 0;
+      }
+    }
+    
+    .el-sub-menu {
+      .el-sub-menu__title {
+        color: rgba(255, 255, 255, 0.9);
+        margin: 4px 12px;
+        border-radius: 8px;
+        height: 48px;
+        line-height: 48px;
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.15);
+          color: #fff;
+        }
+        
+        i,
+        svg {
+          font-size: 18px !important;
+          color: inherit !important;
+          width: 20px !important;
+          height: 20px !important;
+          flex-shrink: 0;
+        }
+      }
+      
+      .el-menu-item {
+        margin: 2px 12px 2px 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 13px;
+        background: #B31212;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        
+        &:hover {
+          background: #C91515;
+        }
+        
+        &.active {
+          background: #E51C23 !important;
+          color: #fff;
+          border-color: rgba(255, 215, 0, 0.5);
+        }
       }
     }
   }
   
   .sidebar-footer {
     padding: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
     
     .toggle-btn {
       width: 100%;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.15);
       border: none;
       color: #fff;
+      border-radius: 8px;
       
       &:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.25);
       }
     }
   }
@@ -241,8 +416,11 @@ const handleToggleSidebar = () => {
 
 .main-content {
   flex: 1;
-  margin-left: 250px;
+  margin-left: 240px;
   transition: margin-left 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   
   .sidebar-collapsed & {
     margin-left: 64px;
@@ -250,13 +428,13 @@ const handleToggleSidebar = () => {
 }
 
 .header {
-  background: #fff;
+  background: #D92121;
   padding: 0 24px;
   height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 8px rgba(217, 33, 33, 0.3);
   
   .header-left {
     display: flex;
@@ -264,12 +442,13 @@ const handleToggleSidebar = () => {
     gap: 16px;
     
     .sidebar-toggle {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.15);
       border: none;
-      color: #666;
+      color: #fff;
+      border-radius: 8px;
       
       &:hover {
-        background: #f5f5f5;
+        background: rgba(255, 255, 255, 0.25);
       }
     }
     
@@ -277,7 +456,7 @@ const handleToggleSidebar = () => {
       margin: 0;
       font-size: 18px;
       font-weight: 600;
-      color: #333;
+      color: #fff;
     }
   }
   
@@ -287,10 +466,15 @@ const handleToggleSidebar = () => {
     gap: 16px;
     
     .notification-btn {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.15);
       border: none;
-      color: #666;
+      color: #fff;
       position: relative;
+      border-radius: 8px;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.25);
+      }
       
       &::after {
         content: '';
@@ -299,7 +483,7 @@ const handleToggleSidebar = () => {
         right: 4px;
         width: 8px;
         height: 8px;
-        background: #ef4444;
+        background: #FFD700;
         border-radius: 50%;
       }
     }
@@ -313,16 +497,17 @@ const handleToggleSidebar = () => {
       border-radius: 8px;
       
       &:hover {
-        background: #f5f5f5;
+        background: rgba(255, 255, 255, 0.15);
       }
       
       .user-avatar {
-        background: linear-gradient(135deg, #ff6b35 0%, #d4145a 100%);
+        background: #FFD700;
+        color: #D92121;
       }
       
       .user-name {
         font-size: 14px;
-        color: #333;
+        color: #fff;
         font-weight: 500;
       }
     }
@@ -331,5 +516,8 @@ const handleToggleSidebar = () => {
 
 .content-wrapper {
   padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 </style>
