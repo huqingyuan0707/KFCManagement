@@ -14,7 +14,7 @@ import {
   ElPagination,
   ElCheckbox
 } from 'element-plus';
-import { Plus, Edit, Trash2, Search, Download } from '@element-plus/icons-vue';
+import { Plus, Edit, Delete, Search, Download } from '@element-plus/icons-vue';
 import { 
   getUserList, 
   createUser, 
@@ -269,7 +269,7 @@ onMounted(() => {
             size="small" 
             @click="handleDelete(scope.row.id)"
           >
-            <Trash2 />
+            <Delete />
             <span>删除</span>
           </el-button>
         </template>

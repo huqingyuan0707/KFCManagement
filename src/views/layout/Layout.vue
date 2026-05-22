@@ -23,7 +23,7 @@ import {
   Bell,
   PieChart,
   UserFilled,
-  SignOut
+  Back
 } from '@element-plus/icons-vue';
 
 const router = useRouter();
@@ -133,7 +133,7 @@ const handleToggleSidebar = () => {
                   <span>账户设置</span>
                 </el-dropdown-item>
                 <el-dropdown-item divided @click="handleLogout">
-                  <SignOut />
+                  <Back />
                   <span>退出登录</span>
                 </el-dropdown-item>
               </el-dropdown-menu>

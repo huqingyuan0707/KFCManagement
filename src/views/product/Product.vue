@@ -16,7 +16,7 @@ import {
   ElCheckbox,
   ElTooltip
 } from 'element-plus';
-import { Plus, Edit, Trash2, Search, Download } from '@element-plus/icons-vue';
+import { Plus, Edit, Delete, Search, Download } from '@element-plus/icons-vue';
 import { 
   getProductList, 
   createProduct, 
@@ -269,7 +269,7 @@ onMounted(() => {
             size="small" 
             @click="handleDelete(scope.row.id)"
           >
-            <Trash2 />
+            <Delete />
             <span>删除</span>
           </el-button>
         </template>

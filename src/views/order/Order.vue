@@ -15,7 +15,7 @@ import {
   ElPagination,
   ElCheckbox
 } from 'element-plus';
-import { Edit, Trash2, Search, Download } from '@element-plus/icons-vue';
+import { Edit, Delete, Search, Download } from '@element-plus/icons-vue';
 import { 
   getOrderList, 
   updateOrder, 
@@ -237,7 +237,7 @@ onMounted(() => {
             size="small" 
             @click="handleDelete(scope.row.id)"
           >
-            <Trash2 />
+            <Delete />
             <span>删除</span>
           </el-button>
         </template>
